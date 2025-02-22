@@ -1,25 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material';
+import { MainLayout } from './components/Layout/MainLayout';
+
+// Lazy load pages
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+const Templates = React.lazy(() => import('./pages/Templates'));
+const History = React.lazy(() => import('./pages/History'));
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <MainLayout>
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/templates" element={<Templates />} />
+              <Route path="/history" element={<History />} />
+            </Routes>
+          </React.Suspense>
+        </MainLayout>
+      </Router>
+    </ThemeProvider>
   );
 }
 
